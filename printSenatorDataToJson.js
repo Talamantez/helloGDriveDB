@@ -2,8 +2,10 @@ console.log('running app');
 
 var fs = require('fs');
 var readline = require('readline');
+var jsonfile = require('jsonfile');
 var google = require('googleapis');
 var googleAuth = require('google-auth-library');
+
 
 // If modifying these scopes, delete your previously saved credentials
 // at ~/.credentials/sheets.googleapis.com-nodejs-quickstart.json
@@ -150,20 +152,24 @@ function listSenatorDetails(auth) {
                 else if ( row[0] == '0' ){
                     senatorsByLastName[ senatorId.toString() ] = row[2];
                     senatorId += 1;
-                    storedIndex = row[0];                 
-
+                    storedIndex = row[0];
                 } else {
                     // console.log(row[2]);
                     // add the senator's last name to the 'Senators' object
-                    senatorsByLastName[senatorId] = row[2];
+                    senatorsByLastName[parseInt(senatorId)] = row[2];
                     senatorId += 1;
                     // store the index to compare to next loop
                     storedIndex = row[0];
                 }
-
             }
             console.log(senatorsByLastName);
-        }
+            var file = 'senators.json'
+            var obj = senatorsByLastName;
+             
+            jsonfile.writeFile(file, obj, function (err) {
+              console.error(err)
+            });      
 
+        }
     });
 }
